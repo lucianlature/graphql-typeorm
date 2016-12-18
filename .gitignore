@@ -20,4 +20,6 @@ jsconfig.json
 # Misc
 .DS_Store
 tmp/
-.idea
+.idea/
+.git/
+
