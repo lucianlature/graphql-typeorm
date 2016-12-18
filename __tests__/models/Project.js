@@ -5,5 +5,5 @@ class Project {
 }
 
 export default {
-    Project: Project
+    Project
 };

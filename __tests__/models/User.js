@@ -6,5 +6,5 @@ class User {
 }
 
 export default {
-    User: User
+    User
 };

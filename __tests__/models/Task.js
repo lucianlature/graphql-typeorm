@@ -7,5 +7,5 @@ class Task {
 }
 
 export default {
-    Task: Task
+    Task
 };
