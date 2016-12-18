@@ -1,17 +1,16 @@
 import { GraphQLList } from 'graphql';
-import argsToFindOptions from './argsToFindOptions';
-import { isConnection, handleConnection, nodeType } from './relay';
+// import argsToFindOptions from './argsToFindOptions';
+// import { isConnection, handleConnection, nodeType } from './relay';
 import invariant from 'assert';
-import Promise from 'bluebird';
+// import Promise from 'bluebird';
 
-function resolverFactory(target, options) {
-
-  var resolver
-    , targetAttributes
-    , isModel = !!target.getTableName
-    , isAssociation = !!target.associationType
-    , association = isAssociation && target
-    , model = isAssociation && target.target || isModel && target;
+export default function resolverFactory(target, options) {
+  let resolver,
+    targetAttributes,
+    isModel = !!target.getTableName,
+    isAssociation = !!target.associationType,
+    association = isAssociation && target,
+    model = isAssociation && target.target || isModel && target;
 
   targetAttributes = Object.keys(model.rawAttributes);
 
@@ -23,14 +22,14 @@ function resolverFactory(target, options) {
   if (options.handleConnection === undefined) options.handleConnection = true;
 
   resolver = function (source, args, context, info) {
-    var type = info.returnType
-      , list = options.list || type instanceof GraphQLList
-      , findOptions = argsToFindOptions(args, targetAttributes);
+    let type = info.returnType,
+      list = options.list || type instanceof GraphQLList,
+      findOptions = argsToFindOptions(args, targetAttributes);
 
     info = {
       ...info,
-      type: type,
-      source: source
+      type,
+      source,
     };
 
     context = context || {};
@@ -44,7 +43,8 @@ function resolverFactory(target, options) {
     findOptions.attributes = targetAttributes;
     findOptions.logging = findOptions.logging || context.logging;
 
-    return Promise.resolve(options.before(findOptions, args, context, info)).then(function (findOptions) {
+    /*
+    return async (options.before(findOptions, args, context, info)).then(function (findOptions) {
       if (list && !findOptions.order) {
         findOptions.order = [[model.primaryKeyAttribute, 'ASC']];
       }
@@ -72,9 +72,8 @@ function resolverFactory(target, options) {
     }).then(function (result) {
       return options.after(result, args, context, info);
     });
+    */
   };
 
   return resolver;
 }
-
-module.exports = resolverFactory;

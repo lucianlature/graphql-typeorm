@@ -29,9 +29,9 @@ function isFragment(info, ast) {
 function simplifyObjectValue(objectValue) {
   return objectValue.fields.reduce((memo, field) => {
     memo[field.name.value] =
-      field.value.kind === 'IntValue' ? parseInt( field.value.value, 10 ) :
-        field.value.kind === 'FloatValue' ? parseFloat( field.value.value ) :
-          field.value.kind === 'ObjectValue' ? simplifyObjectValue( field.value ) :
+      field.value.kind === 'IntValue' ? parseInt(field.value.value, 10) :
+        field.value.kind === 'FloatValue' ? parseFloat(field.value.value) :
+          field.value.kind === 'ObjectValue' ? simplifyObjectValue(field.value) :
             field.value.value;
 
     return memo;
@@ -40,7 +40,7 @@ function simplifyObjectValue(objectValue) {
 
 function simplifyValue(value, info) {
   if (value.values) {
-    return value.values.map(value => simplifyValue(value, info));
+    return value.values.map((value) => simplifyValue(value, info));
   }
   if ('value' in value) {
     return value.value;
@@ -54,15 +54,15 @@ function simplifyValue(value, info) {
 }
 
 module.exports = function simplifyAST(ast, info, parent) {
-  var selections;
+  let selections;
   info = info || {};
 
   if (ast.selectionSet) selections = ast.selectionSet.selections;
   if (Array.isArray(ast)) {
     let simpleAST = {};
-    ast.forEach(ast => {
+    ast.forEach((ast) => {
       simpleAST = deepMerge(
-        simpleAST, simplifyAST(ast, info)
+        simpleAST, simplifyAST(ast, info),
       );
     });
 
@@ -73,26 +73,28 @@ module.exports = function simplifyAST(ast, info, parent) {
     return simplifyAST(info.fragments[ast.name.value], info);
   }
 
-  if (!selections) return {
-    fields: {},
-    args: {}
-  };
+  if (!selections) {
+    return {
+      fields: {},
+      args: {},
+    };
+  }
 
   return selections.reduce(function (simpleAST, selection) {
     if (selection.kind === 'FragmentSpread' || selection.kind === 'InlineFragment') {
       simpleAST = deepMerge(
-        simpleAST, simplifyAST(selection, info)
+        simpleAST, simplifyAST(selection, info),
       );
       return simpleAST;
     }
 
-    var name = selection.name.value
-      , alias = selection.alias && selection.alias.value
-      , key = alias || name;
+    let name = selection.name.value,
+      alias = selection.alias && selection.alias.value,
+      key = alias || name;
 
     simpleAST.fields[key] = simpleAST.fields[key] || {};
     simpleAST.fields[key] = deepMerge(
-      simpleAST.fields[key], simplifyAST(selection, info, simpleAST.fields[key])
+      simpleAST.fields[key], simplifyAST(selection, info, simpleAST.fields[key]),
     );
 
     if (alias) {
@@ -111,6 +113,6 @@ module.exports = function simplifyAST(ast, info, parent) {
     return simpleAST;
   }, {
     fields: {},
-    args: {}
+    args: {},
   });
 };
