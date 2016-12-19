@@ -142,97 +142,10 @@ schema = new GraphQLSchema({
  * Now fill the testing DB with fixture values
  * We'll have projectA & projectB with two random labels each,
  * and two users each with some tasks that belong to those projects.
- *
-before(function () {
-  var taskId = 0
-    , projectId = 0;
-
-  return sequelize.sync({force: true}).bind(this).then(function () {
-    return Promise.join(
-      Project.create({
-        id: ++projectId,
-        name: 'b' + Math.random().toString(),
-        labels: [
-          {name: Math.random().toString()},
-          {name: Math.random().toString()}
-        ]
-      }, {
-        include: [
-          Project.Labels
-        ]
-      }),
-      Project.create({
-        id: ++projectId,
-        name: 'a' + Math.random().toString(),
-        labels: [
-          {name: Math.random().toString()},
-          {name: Math.random().toString()}
-        ]
-      }, {
-        include: [
-          Project.Labels
-        ]
-      })
-    ).bind(this).spread(function (projectA, projectB) {
-      this.projectA = projectA;
-      this.projectB = projectB;
-    }).bind(this).then(function () {
-      return Promise.join(
-        User.create({
-          id: 1,
-          name: 'b' + Math.random().toString(),
-          tasks: [
-            {
-              id: ++taskId,
-              title: Math.random().toString(),
-              createdAt: new Date(Date.UTC(2014, 5, 11)),
-              projectId: this.projectA.id
-            },
-            {
-              id: ++taskId,
-              title: Math.random().toString(),
-              createdAt: new Date(Date.UTC(2014, 5, 16)),
-              projectId: this.projectB.id
-            },
-            {
-              id: ++taskId,
-              title: Math.random().toString(),
-              createdAt: new Date(Date.UTC(2014, 5, 20)),
-              projectId: this.projectA.id
-            }
-          ]
-        }, {
-          include: [User.Tasks]
-        }),
-        User.create({
-          id: 2,
-          name: 'a' + Math.random().toString(),
-          tasks: [
-            {
-              id: ++taskId,
-              title: Math.random().toString(),
-              projectId: this.projectB.id
-            },
-            {
-              id: ++taskId,
-              title: Math.random().toString(),
-              projectId: this.projectB.id
-            }
-          ]
-        }, {
-          include: [User.Tasks]
-        })
-      ).bind(this).spread(function (userA, userB) {
-        this.userA = userA;
-        this.userB = userB;
-        this.users = [userA, userB];
-      });
-    });
-  });
-});
-*/
-
+ */
 beforeAll(async () => {
+  var taskId = 0;
+
   const connection = await typeorm.createConnection({
     driver: {
         type: 'postgres',
@@ -248,32 +161,63 @@ beforeAll(async () => {
     autoSchemaSync: true
   });
 
-  let post = new Post();
-  post.title = "Control flow based type analysis";
-  post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
-  post.categories = [new Category(0, "TypeScript"), new Category(0, "Programming")];
+  let userB = new User({
+    id: 1,
+    name: 'b' + Math.random().toString(),
+    tasks: [
+      new Task({
+        id: ++taskId,
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2014, 5, 11))
+      }),
+      new Task({
+        id: ++taskId,
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2014, 5, 16))
+      }),
+      new Task({
+        id: ++taskId,
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2014, 5, 20))
+      })
+    ]
+  });
 
-  let postRepository = connection.getRepository(Post);
-  postRepository.persist(post)
-    .then(function(savedPost) {
-        console.log("Post has been saved: ", savedPost);
-        console.log("Now lets load all posts: ");
+  let userA = new User({
+    id: 2,
+    name: 'a' + Math.random().toString(),
+    tasks: [
+      new Task({
+        id: ++taskId,
+        title: Math.random().toString()
+      }),
+      new Task({
+        id: ++taskId,
+        title: Math.random().toString()
+      })
+    ]
+  });
 
-        return postRepository.find();
+  let userRepository = connection.getRepository(User);
+  userRepository.persist(userA)
+    .then(function(savedUser) {
+        console.log("User has been saved: ", savedUser);
+        console.log("Now lets load all users: ");
+
+        return userRepository.find();
     })
-    .then(function(allPosts) {
-        console.log("All posts: ", allPosts);
+    .then(function(allUsers) {
+        console.log("All users: ", allUsers);
     });
 });
 
-xit('should resolve a plain result with a single model', function () {
+it('should resolve a plain result with a single model', function () {
   var user = this.userB;
 
   return graphql(schema, `
     {
       user(id: ${user.id}) {
         name
-        myVirtual
       }
     }
   `).then(function (result) {
