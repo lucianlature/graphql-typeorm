@@ -5,6 +5,10 @@
 import { createConnection } from 'typeorm';
 import resolver from '../src/resolver';
 
+// import test models
+import User from './models/User';
+import Task from './models/Task';
+
 // https://facebook.github.io/jest/docs/api.html#jestusefaketimers
 jest.useFakeTimers();
 
@@ -18,9 +22,7 @@ import {
   GraphQLList
 } from 'graphql';
 
-let User 
-  , Task
-  , Project
+let Project
   , Label
   , taskType
   , userType
@@ -146,13 +148,13 @@ schema = new GraphQLSchema({
 beforeAll(async () => {
   var taskId = 0;
 
-  const connection = await typeorm.createConnection({
+  const connection = await createConnection({
     driver: {
         type: 'postgres',
         host: 'localhost',
         port: 5432,
-        username: 'test',
-        password: 'admin',
+        username: 'codelinks',
+        password: '',
         database: 'test'
     },
     entities: [
@@ -168,17 +170,17 @@ beforeAll(async () => {
       new Task({
         id: ++taskId,
         title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2014, 5, 11))
+        createdAt: new Date(Date.UTC(2016, 5, 11))
       }),
       new Task({
         id: ++taskId,
         title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2014, 5, 16))
+        createdAt: new Date(Date.UTC(2016, 5, 16))
       }),
       new Task({
         id: ++taskId,
         title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2014, 5, 20))
+        createdAt: new Date(Date.UTC(2016, 5, 20))
       })
     ]
   });
@@ -199,16 +201,13 @@ beforeAll(async () => {
   });
 
   let userRepository = connection.getRepository(User);
-  userRepository.persist(userA)
-    .then(function(savedUser) {
-        console.log("User has been saved: ", savedUser);
-        console.log("Now lets load all users: ");
+  
+  const savedUser = await userRepository.persist(userA);
+  console.log("User has been saved: ", savedUser);
+  console.log("Now lets load all users: ");
 
-        return userRepository.find();
-    })
-    .then(function(allUsers) {
-        console.log("All users: ", allUsers);
-    });
+  const allUsers = await userRepository.find();
+  console.log("All users: ", allUsers);
 });
 
 it('should resolve a plain result with a single model', function () {

@@ -31,7 +31,8 @@
   "homepage": "https://github.com/lucianlature/graphql-typeorm#readme",
   "dependencies": {
     "graphql": "^0.8.2",
-    "typeorm": "0.0.5"
+    "pg": "^6.1.2",
+    "typeorm": "^0.0.5"
   },
   "peerDependencies": {
     "graphql": "0.8.2"
