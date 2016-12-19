@@ -48,7 +48,7 @@ taskType = new GraphQLObjectType({
     }
   }
 });
-/*
+
 userType = new GraphQLObjectType({
   name: 'User',
   description: 'A user',
@@ -74,7 +74,7 @@ userType = new GraphQLObjectType({
         first: {
           type: GraphQLInt
         }
-      },
+      }/*,
       resolve: resolver(User.Tasks, {
         before: function (options, args) {
           if (args.first) {
@@ -88,7 +88,7 @@ userType = new GraphQLObjectType({
 
           return options;
         }
-      })
+      })*/
     },
     tasksByIds: {
       type: new GraphQLList(taskType),
@@ -96,7 +96,7 @@ userType = new GraphQLObjectType({
         ids: {
           type: new GraphQLList(GraphQLInt)
         }
-      },
+      }/*,
       resolve: resolver(User.Tasks, {
         before: (options, args) => {
           options.where = options.where || {};
@@ -104,6 +104,7 @@ userType = new GraphQLObjectType({
           return options;
         }
       })
+      */
     }
   }
 });
@@ -118,8 +119,8 @@ schema = new GraphQLSchema({
           id: {
             type: new GraphQLNonNull(GraphQLInt)
           }
-        },
-        resolve: resolver(User)
+        }/*,
+        resolve: resolver(User)*/
       },
       users: {
         type: new GraphQLList(userType),
@@ -130,13 +131,12 @@ schema = new GraphQLSchema({
           order: {
             type: GraphQLString
           }
-        },
-        resolve: resolver(User)
+        }/*,
+        resolve: resolver(User)*/
       }
     }
   })
 });
-*/
 
 /**
  * Now fill the testing DB with fixture values
