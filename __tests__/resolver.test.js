@@ -3,7 +3,7 @@
 'use strict';
 
 import { createConnection } from 'typeorm';
-// import resolver from '../src/resolver';
+import resolver from '../src/resolver';
 
 // https://facebook.github.io/jest/docs/api.html#jestusefaketimers
 jest.useFakeTimers();
@@ -231,6 +231,40 @@ before(function () {
   });
 });
 */
+
+beforeAll(async () => {
+  const connection = await typeorm.createConnection({
+    driver: {
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'test',
+        password: 'admin',
+        database: 'test'
+    },
+    entities: [
+        __dirname + "/entities/*.js"
+    ],
+    autoSchemaSync: true
+  });
+
+  let post = new Post();
+  post.title = "Control flow based type analysis";
+  post.text = "TypeScript 2.0 implements a control flow-based type analysis for local variables and parameters.";
+  post.categories = [new Category(0, "TypeScript"), new Category(0, "Programming")];
+
+  let postRepository = connection.getRepository(Post);
+  postRepository.persist(post)
+    .then(function(savedPost) {
+        console.log("Post has been saved: ", savedPost);
+        console.log("Now lets load all posts: ");
+
+        return postRepository.find();
+    })
+    .then(function(allPosts) {
+        console.log("All posts: ", allPosts);
+    });
+});
 
 xit('should resolve a plain result with a single model', function () {
   var user = this.userB;
