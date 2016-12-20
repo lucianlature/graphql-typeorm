@@ -1,8 +1,6 @@
 /** @flow */
 
-import {
-  Task,
-} from '../models/Task';
+import Task from '../models/Task';
 
 const TaskSchema = {
   target: Task,
@@ -21,6 +19,4 @@ const TaskSchema = {
   },
 };
 
-export default {
-  TaskSchema,
-};
+export default TaskSchema;

@@ -1,7 +1,8 @@
-import { User } from '../models/User';
-import { Task } from '../models/Task';
+import { Table } from 'typeorm';
+import User from '../models/User';
+import Task from '../models/Task';
 
-const UserSchema = {
+export default {
     target: User,
     columns: {
         id: {
@@ -12,7 +13,7 @@ const UserSchema = {
         name: {
             type: 'string'
         }
-    },
+    }/*,
     relations: {
         tasks: {
             target: Task,
@@ -20,9 +21,5 @@ const UserSchema = {
             joinTable: true,
             cascadeInsert: true
         }
-    }
-};
-
-export default {
-    UserSchema
+    }*/
 };

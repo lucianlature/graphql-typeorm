@@ -2,12 +2,19 @@
 
 'use strict';
 
+// import reflect-metadata shim
+import 'reflect-metadata';
+
+import path from 'path';
 import { createConnection } from 'typeorm';
 import resolver from '../src/resolver';
 
 // import test models
 import User from './models/User';
 import Task from './models/Task';
+
+import TaskSchema from './entities/TaskSchema';
+import UserSchema from './entities/UserSchema';
 
 // https://facebook.github.io/jest/docs/api.html#jestusefaketimers
 jest.useFakeTimers();
@@ -148,21 +155,6 @@ schema = new GraphQLSchema({
 beforeAll(async () => {
   var taskId = 0;
 
-  const connection = await createConnection({
-    driver: {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'codelinks',
-        password: '',
-        database: 'test'
-    },
-    entities: [
-        __dirname + "/entities/*.js"
-    ],
-    autoSchemaSync: true
-  });
-
   let userB = new User({
     id: 1,
     name: 'b' + Math.random().toString(),
@@ -200,9 +192,23 @@ beforeAll(async () => {
     ]
   });
 
+  let connection = await createConnection({
+    driver: {
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'codelinks',
+        password: '',
+        database: 'test'
+    },
+    entitySchemas: [
+        TaskSchema, UserSchema
+    ],
+    autoSchemaSync: true
+  });
   let userRepository = connection.getRepository(User);
-  
-  const savedUser = await userRepository.persist(userA);
+  let savedUser = await userRepository.persist(userA);
+    
   console.log("User has been saved: ", savedUser);
   console.log("Now lets load all users: ");
 
@@ -1004,3 +1010,4 @@ xit('should resolve args from array to before', function () {
     expect(result.data.user.tasksByIds.length).to.equal(1);
   });
 });
+*/
