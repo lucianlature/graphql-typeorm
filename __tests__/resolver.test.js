@@ -6,7 +6,7 @@
 import 'reflect-metadata';
 
 import path from 'path';
-import { createConnection } from 'typeorm';
+import { createConnection } from './support/helper';
 import resolver from '../src/resolver';
 
 // import test models
@@ -37,7 +37,8 @@ let Project
   , userB
   , projectType
   , labelType
-  , schema;
+  , schema
+  , connection;
 
 /**
  * Setup the a) testing db schema and b) the according GraphQL types
@@ -120,35 +121,6 @@ userType = new GraphQLObjectType({
   }
 });
 
-schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: {
-      user: {
-        type: userType,
-        args: {
-          id: {
-            type: new GraphQLNonNull(GraphQLInt)
-          }
-        }/*,
-        resolve: resolver(User)*/
-      },
-      users: {
-        type: new GraphQLList(userType),
-        args: {
-          limit: {
-            type: GraphQLInt
-          },
-          order: {
-            type: GraphQLString
-          }
-        }/*,
-        resolve: resolver(User)*/
-      }
-    }
-  })
-});
-
 /**
  * Now fill the testing DB with fixture values
  * We'll have projectA & projectB with two random labels each,
@@ -194,7 +166,7 @@ beforeAll(async () => {
     ]
   });
 
-  let connection = await createConnection({
+  connection = await createConnection({
     driver: {
         type: 'postgres',
         host: 'localhost',
@@ -203,6 +175,7 @@ beforeAll(async () => {
         password: '',
         database: 'test'
     },
+    entitites: [ User ],
     entitySchemas: [
         TaskSchema, UserSchema
     ],
@@ -210,6 +183,36 @@ beforeAll(async () => {
   });
   let userRepository = connection.getRepository(User);
   let savedUser = await userRepository.persist(userA);
+
+  schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+      name: 'RootQueryType',
+      fields: {
+        user: {
+          type: userType,
+          args: {
+            id: {
+              type: new GraphQLNonNull(GraphQLInt)
+            }
+          },
+          resolve: resolver(userRepository)
+        },
+        users: {
+          type: new GraphQLList(userType),
+          args: {
+            limit: {
+              type: GraphQLInt
+            },
+            order: {
+              type: GraphQLString
+            }
+          }/*,
+          resolve: resolver(User)*/
+        }
+      }
+    })
+  });
+
   /*  
   console.log("User has been saved: ", savedUser);
   console.log("Now lets load all users: ");
@@ -220,7 +223,7 @@ beforeAll(async () => {
 });
 
 it('should resolve a plain result with a single model', async () => {
-  var user = userB;
+  var user = userA;
   var result = await graphql(schema, `
     {
       user(id: ${user.id}) {
@@ -228,16 +231,14 @@ it('should resolve a plain result with a single model', async () => {
       }
     }
   `);
-  console.info(result);
-  /*
+  
   if (result.errors) throw new Error(result.errors[0].stack);
 
-  expect(result.data).to.deep.equal({
+  expect(result.data).toEqual({
     user: {
       name: user.name
     }
   });
-  */
 });
 /*
 xit('should resolve a plain result with an aliased field', function () {

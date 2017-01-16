@@ -1,15 +1,19 @@
-import { GraphQLList } from 'graphql';
-import invariant from 'assert';
+import { GraphQLList } from 'graphql'
+import argsToFindOptions from './argsToFindOptions'
+import invariant from 'assert'
 
-export default function resolverFactory(target, options) {
+export default function resolverFactory(repository, options) {
   let resolver,
       targetAttributes,
-      isModel = !!target.getTableName,
-      isAssociation = !!target.associationType,
-      association = isAssociation && target,
-      model = isAssociation && target.target || isModel && target;
+      target = repository.target,
+      schemaName = target.name,
+      metadata = repository.metadata;/*,
+      isModel = !!schema.getTableName,
+      isAssociation = !!schema.associationType,
+      association = isAssociation && schema,
+      model = isAssociation && schema.target || isModel && schema;*/
 
-  targetAttributes = Object.keys(model.rawAttributes);
+  targetAttributes = metadata.columns.map(columnMeta => columnMeta.propertyName) || [];
 
   options = options || {};
 
@@ -18,5 +22,16 @@ export default function resolverFactory(target, options) {
   if (typeof options.after === 'undefined') options.after = (result) => result;
   if (typeof options.handleConnection === 'undefined') options.handleConnection = true;
 
-  return (source, args, context, info) => {};
+  resolver = (source, args, context, info) => {
+    let findOptions = argsToFindOptions(args, targetAttributes);
+
+    return repository
+            .createQueryBuilder(info.fieldName)
+            .where('user.id = id', findOptions.where)
+            .getOne(findOptions);
+    // return await model[list ? 'findAll' : 'findOne'](findOptions);
+  };
+
+  return resolver;
 }
+

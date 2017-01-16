@@ -1,4 +1,4 @@
-import {createSequelize} from '../support/helper';
+import { createTypeORM } from '../support/helper';
 import Sequelize from 'sequelize';
 
 const sequelize = createSequelize({

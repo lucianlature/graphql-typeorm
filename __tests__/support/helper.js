@@ -2,51 +2,69 @@
 // import Sequelize from 'sequelize';
 
 // export const Promise = Sequelize.Promise;
-// export const sequelize = createSequelize();
+import * as typeorm from 'typeorm'
+
+import TaskSchema from '../entities/TaskSchema'
+import UserSchema from '../entities/UserSchema'
+
+import User from '../models/User'
 
 if (typeof afterEach !== 'undefined') {
-  afterEach(resetCache);
+  // afterEach(resetCache);
 }
 
-export function createTypeORM(options = {}) {
+export async function createConnection(options = {}) {
   const env = process.env;
-  const dialect = env.DIALECT || 'sqlite';
+  const type = env.TYPE || 'sqlite';
   const config = Object.assign(
     {
       host: 'localhost',
-      user: 'graphql_typeorm_test',
+      username: 'graphql_typeorm_test',
       password: 'graphql_typeorm_test',
       database: 'graphql_typeorm_test'
     },
-    dialect === 'postgres' && {
+    type === 'postgres' && {
       host: env.POSTGRES_PORT_5432_TCP_ADDR,
-      user: env.POSTGRES_ENV_POSTGRES_USER,
+      username: env.POSTGRES_ENV_POSTGRES_USER,
       password: env.POSTGRES_ENV_POSTGRES_PASSWORD,
       database: env.POSTGRES_ENV_POSTGRES_DATABASE
     },
-    dialect === 'mysql' && {
+    type === 'mysql' && {
       host: env.MYSQL_PORT_3306_TCP_ADDR,
       user: env.MYSQL_ENV_MYSQL_USER,
       password: env.MYSQL_ENV_MYSQL_PASSWORD,
       database: env.MYSQL_ENV_MYSQL_DATABASE
     },
-    dialect === 'postgres' && env.CI && {
+    type === 'postgres' && env.CI && {
       user: 'postgres',
       password: '',
       database: 'test'
     },
-    dialect === 'mysql' && env.CI && {
+    type === 'mysql' && env.CI && {
       user: 'travis',
       password: '',
       database: 'test'
     }
   );
 
-  return new Sequelize(config.database, config.user, config.password, {
+  const driverOptions = {
+    type: type,
+    port: 5432,
     host: config.host,
-    dialect: dialect,
-    logging: false,
-    ...options
+    username: config.username,
+    password: config.password,
+    database: config.database,
+  };
+  
+  return await typeorm.createConnection({ 
+    driver: driverOptions,
+    entities: [ User ],
+    entitySchemas: [
+        // here we load all entities from entities directory
+        TaskSchema,
+        UserSchema
+    ],
+    autoSchemaSync: true
   });
 }
 

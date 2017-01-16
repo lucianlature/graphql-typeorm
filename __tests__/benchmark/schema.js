@@ -15,11 +15,11 @@ import {
 } from 'graphql-relay';
 
 import resolver from '../../src/resolver';
-
+/*
 import {
   sequelizeNodeInterface
 } from '../../lib/relay';
-
+*/
 import { sequelize, models } from './models';
 
 const node = sequelizeNodeInterface(sequelize);
