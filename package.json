@@ -17,7 +17,7 @@
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 6.2"
+    "node": ">= 7.2"
   },
   "repository": {
     "type": "git",
@@ -56,8 +56,6 @@
     "eslint-plugin-flowtype": "~2.29.1",
     "eslint-plugin-import": "~2.2.0",
     "eslint-plugin-no-async-without-await": "~1.2.0",
-    "express": "4.14.0",
-    "express-graphql": "0.6.1",
     "flow-bin": "~0.37.0",
     "graphql-relay": "0.4.4",
     "jest": "~18.0.0",

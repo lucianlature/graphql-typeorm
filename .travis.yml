@@ -1,13 +1,32 @@
+sudo: false
+
 language: node_js
 node_js:
-  - "6"
+  - "7"
   - "node"
+
+cache:
+  directories:
+    - node_modules
+
+env:
+  - TYPE=postgres
+
+addons:
+  postgresql: "9.4"
+
 before_install:
   - npm install -g yarn
 install:
   - yarn
+before_script:
+  - if [[ "$TYPE" == "postgres" ]]; then psql -c "drop database if exists test;" -U postgres; fi
+  - if [[ "$TYPE" == "postgres" ]]; then psql -c "create database test;" -U postgres; fi
 script:
   - yarn run test
 cache:
   directories:
     - $HOME/.yarn-cache
+
+notifications:
+  email: false
