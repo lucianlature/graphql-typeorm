@@ -1,4 +1,4 @@
-/* @flow */
+/** @flow */
 
 import invariant from 'assert';
 import argsToFindOptions from './argsToFindOptions';
