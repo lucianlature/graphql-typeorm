@@ -1,19 +1,18 @@
-import { Table } from 'typeorm';
+/** @flow */
+
 import User from '../models/User';
-import Task from '../models/Task';
 
 export default {
-    target: User,
-    columns: {
-        id: {
-            primary: true,
-            type: 'int',
-            generated: true
-        },
-        name: {
-            type: 'string'
-        }
-    }/*,
+  target: User,
+  columns: {
+    id: {
+      primary: true,
+      type: 'int',
+      generated: true,
+    },
+    name: {
+      type: 'string',
+    }, /* ,
     relations: {
         tasks: {
             target: Task,
@@ -22,4 +21,5 @@ export default {
             cascadeInsert: true
         }
     }*/
+  },
 };
