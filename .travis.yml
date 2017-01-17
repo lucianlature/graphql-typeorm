@@ -24,6 +24,10 @@ before_script:
   - if [[ "$TYPE" == "postgres" ]]; then psql -c "create database test;" -U postgres; fi
 script:
   - yarn run test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)  
+
 cache:
   directories:
     - $HOME/.yarn-cache

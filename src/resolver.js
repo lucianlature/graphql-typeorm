@@ -1,35 +1,25 @@
-import { GraphQLList } from 'graphql'
-import argsToFindOptions from './argsToFindOptions'
-import invariant from 'assert'
+/* @flow */
 
-export default function resolverFactory(repository, options) {
-  let resolver,
-      targetAttributes,
-      target = repository.target,
-      schemaName = target.name,
-      metadata = repository.metadata;/*,
-      isModel = !!schema.getTableName,
-      isAssociation = !!schema.associationType,
-      association = isAssociation && schema,
-      model = isAssociation && schema.target || isModel && schema;*/
+import invariant from 'assert';
+import argsToFindOptions from './argsToFindOptions';
 
-  targetAttributes = metadata.columns.map(columnMeta => columnMeta.propertyName) || [];
-
-  options = options || {};
+export default function resolverFactory(repository, resolverOptions) {
+  const metadata = repository.metadata;
+  const targetAttributes = metadata.columns.map((columnMeta) => columnMeta.propertyName) || [];
+  const options = resolverOptions || {};
 
   invariant(options.include === undefined, 'Include support has been removed in favor of dataloader batching');
-  if (typeof options.before === 'undefined') options.before = (options) => options;
+  if (typeof options.before === 'undefined') options.before = (optionsBefore) => optionsBefore;
   if (typeof options.after === 'undefined') options.after = (result) => result;
   if (typeof options.handleConnection === 'undefined') options.handleConnection = true;
 
-  resolver = (source, args, context, info) => {
-    let findOptions = argsToFindOptions(args, targetAttributes);
+  const resolver = (source, args, context, info) => {
+    const findOptions = argsToFindOptions(args, targetAttributes);
 
     return repository
             .createQueryBuilder(info.fieldName)
             .where('user.id = id', findOptions.where)
             .getOne(findOptions);
-    // return await model[list ? 'findAll' : 'findOne'](findOptions);
   };
 
   return resolver;

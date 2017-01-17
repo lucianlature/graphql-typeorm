@@ -1,23 +1,7 @@
 /** @flow */
 
-'use strict';
-
 // import reflect-metadata shim
 import 'reflect-metadata';
-
-import path from 'path';
-import { createConnection } from './support/helper';
-import resolver from '../src/resolver';
-
-// import test models
-import User from './models/User';
-import Task from './models/Task';
-
-import TaskSchema from './entities/TaskSchema';
-import UserSchema from './entities/UserSchema';
-
-// https://facebook.github.io/jest/docs/api.html#jestusefaketimers
-jest.useFakeTimers();
 
 import {
   graphql,
@@ -26,19 +10,23 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLList,
 } from 'graphql';
 
-let Project
-  , Label
-  , taskType
-  , userType
-  , userA
-  , userB
-  , projectType
-  , labelType
-  , schema
-  , connection;
+import { createConnection } from './support/helper';
+import resolver from '../src/resolver';
+
+// import test models
+import User from './models/User';
+import Task from './models/Task';
+
+// https://facebook.github.io/jest/docs/api.html#jestusefaketimers
+jest.useFakeTimers();
+
+let userA;
+let userB;
+let schema;
+let connection;
 
 /**
  * Setup the a) testing db schema and b) the according GraphQL types
@@ -48,20 +36,20 @@ let Project
  */
 
 
-taskType = new GraphQLObjectType({
+const taskType = new GraphQLObjectType({
   name: 'Task',
   description: 'A task',
   fields: {
     id: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLInt),
     },
     title: {
-      type: GraphQLString
-    }
-  }
+      type: GraphQLString,
+    },
+  },
 });
 
-userType = new GraphQLObjectType({
+const userType = new GraphQLObjectType({
   name: 'User',
   description: 'A user',
   fields: {
@@ -75,18 +63,18 @@ userType = new GraphQLObjectType({
       type: new GraphQLList(taskType),
       args: {
         limit: {
-          type: GraphQLInt
+          type: GraphQLInt,
         },
         offset: {
-          type: GraphQLInt
+          type: GraphQLInt,
         },
         order: {
-          type: GraphQLString
+          type: GraphQLString,
         },
         first: {
-          type: GraphQLInt
-        }
-      }/*,
+          type: GraphQLInt,
+        },
+      }, /* ,
       resolve: resolver(User.Tasks, {
         before: function (options, args) {
           if (args.first) {
@@ -106,9 +94,9 @@ userType = new GraphQLObjectType({
       type: new GraphQLList(taskType),
       args: {
         ids: {
-          type: new GraphQLList(GraphQLInt)
-        }
-      }/*,
+          type: new GraphQLList(GraphQLInt),
+        },
+      }, /* ,
       resolve: resolver(User.Tasks, {
         before: (options, args) => {
           options.where = options.where || {};
@@ -117,8 +105,8 @@ userType = new GraphQLObjectType({
         }
       })
       */
-    }
-  }
+    },
+  },
 });
 
 /**
@@ -127,62 +115,57 @@ userType = new GraphQLObjectType({
  * and two users each with some tasks that belong to those projects.
  */
 beforeAll(async () => {
-  var taskId = 0;
-
-  userB = new User({
-    id: 1,
-    name: 'b' + Math.random().toString(),
-    tasks: [
-      new Task({
-        id: ++taskId,
-        title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2016, 5, 11))
-      }),
-      new Task({
-        id: ++taskId,
-        title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2016, 5, 16))
-      }),
-      new Task({
-        id: ++taskId,
-        title: Math.random().toString(),
-        createdAt: new Date(Date.UTC(2016, 5, 20))
-      })
-    ]
-  });
+  let taskId = 0;
 
   userA = new User({
     id: 2,
-    name: 'a' + Math.random().toString(),
+    name: `a${Math.random().toString()}`,
     tasks: [
       new Task({
-        id: ++taskId,
-        title: Math.random().toString()
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 7, 11)),
       }),
       new Task({
-        id: ++taskId,
-        title: Math.random().toString()
-      })
-    ]
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 7, 16)),
+      }),
+      new Task({
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 7, 20)),
+      }),
+    ],
   });
 
-  connection = await createConnection({
-    driver: {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'codelinks',
-        password: '',
-        database: 'test'
-    },
-    entitites: [ User ],
-    entitySchemas: [
-        TaskSchema, UserSchema
+  userB = new User({
+    id: 1,
+    name: `b${Math.random().toString()}`,
+    tasks: [
+      new Task({
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 5, 11)),
+      }),
+      new Task({
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 5, 16)),
+      }),
+      new Task({
+        id: (taskId += 1),
+        title: Math.random().toString(),
+        createdAt: new Date(Date.UTC(2016, 5, 20)),
+      }),
     ],
-    autoSchemaSync: true
   });
-  let userRepository = connection.getRepository(User);
-  let savedUser = await userRepository.persist(userA);
+
+  connection = await createConnection();
+  const userRepository = connection.getRepository(User);
+  // save the user instances
+  // await userRepository.persist(userA);
+  await userRepository.persist(userB);
 
   schema = new GraphQLSchema({
     query: new GraphQLObjectType({
@@ -192,108 +175,68 @@ beforeAll(async () => {
           type: userType,
           args: {
             id: {
-              type: new GraphQLNonNull(GraphQLInt)
-            }
+              type: new GraphQLNonNull(GraphQLInt),
+            },
           },
-          resolve: resolver(userRepository)
+          resolve: resolver(userRepository),
         },
         users: {
           type: new GraphQLList(userType),
           args: {
             limit: {
-              type: GraphQLInt
+              type: GraphQLInt,
             },
             order: {
-              type: GraphQLString
-            }
-          }/*,
-          resolve: resolver(User)*/
-        }
-      }
-    })
+              type: GraphQLString,
+            },
+          },
+          resolve: resolver(userRepository),
+        },
+      },
+    }),
   });
-
-  /*  
-  console.log("User has been saved: ", savedUser);
-  console.log("Now lets load all users: ");
-
-  const allUsers = await userRepository.find();
-  console.log("All users: ", allUsers);
-  */
 });
 
-it('should resolve a plain result with a single model', async () => {
-  var user = userA;
-  var result = await graphql(schema, `
+xit('should resolve a plain result with a single model', async () => {
+  const user = userA;
+  const result = await graphql(schema, `
     {
       user(id: ${user.id}) {
         name
       }
     }
   `);
-  
+
   if (result.errors) throw new Error(result.errors[0].stack);
 
   expect(result.data).toEqual({
     user: {
-      name: user.name
-    }
-  });
-});
-/*
-xit('should resolve a plain result with an aliased field', function () {
-  var user = this.userB;
-
-  return graphql(schema, `
-    {
-      user(id: ${user.id}) {
-        name
-        magic: myVirtual
-      }
-    }
-  `).then(function (result) {
-    if (result.errors) throw new Error(result.errors[0].stack);
-
-    expect(result.data).to.deep.equal({
-      user: {
-        name: user.name,
-        magic: 'lol'
-      }
-    });
+      name: user.name,
+    },
   });
 });
 
-xit('should resolve a plain result with a single model and aliases', function () {
-  var userA = this.userA
-    , userB = this.userB;
-
-  return graphql(schema, `
+it('should resolve a plain result with two single models', async () => {
+  // console.info(userA.id);
+  // console.info('userB.id = ', userB.id);
+  const result = await graphql(schema, `
     {
-      userA: user(id: ${userA.id}) {
-        name
-        myVirtual
-      }
       userB: user(id: ${userB.id}) {
         name
-        myVirtual
       }
     }
-  `).then(function (result) {
-    if (result.errors) throw new Error(result.errors[0].stack);
+  `);
+  // console.info(result.data);
+  if (result.errors) throw new Error(result.errors[0].stack);
 
-    expect(result.data).to.deep.equal({
-      userA: {
-        name: userA.name,
-        myVirtual: 'lol'
-      },
-      userB: {
-        name: userB.name,
-        myVirtual: 'lol'
-      }
-    });
+  expect(result.data).toEqual({
+    userB: {
+      name: userB.name,
+    },
   });
 });
 
+/*
 xit('should resolve a array result with a model and aliased includes', function () {
   return graphql(schema, `
     {
@@ -764,7 +707,8 @@ xit('should resolve a array result with a single limited hasMany association', f
   });
 });
 
-xit('should resolve a array result with a single limited hasMany association with a nested belongsTo relation', function () {
+xit('should resolve a array result with a single limited
+hasMany association with a nested belongsTo relation', function () {
   var users = this.users
     , sqlSpy = sinon.spy();
 
