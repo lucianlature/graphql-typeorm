@@ -6,7 +6,7 @@
     "jasmine": true
   },
   "plugins": [
-    "flowtype",
+    "flow-remove-types",
     "no-async-without-await"
   ],
   "rules": {

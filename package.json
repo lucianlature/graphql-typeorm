@@ -31,9 +31,9 @@
   "homepage": "https://github.com/lucianlature/graphql-typeorm#readme",
   "dependencies": {
     "graphql": "0.8.2",
-    "pg": "^6.1.2",
+    "pg": "6.1.2",
     "reflect-metadata": "0.1.9",
-    "sqlite3": "^3.1.8",
+    "source-map-support": "0.4.10",
     "typeorm": "0.0.6"
   },
   "peerDependencies": {
@@ -41,24 +41,10 @@
   },
   "devDependencies": {
     "assert": "1.4.1",
-    "babel-cli": "~6.18.0",
-    "babel-core": "~6.21.0",
-    "babel-eslint": "~7.1.1",
-    "babel-jest": "~18.0.0",
-    "babel-plugin-transform-async-to-generator": "~6.16.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "~6.18.0",
-    "babel-plugin-transform-flow-strip-types": "~6.21.0",
-    "babel-plugin-transform-object-rest-spread": "6.20.2",
-    "babel-plugin-transform-runtime": "~6.15.0",
-    "babel-preset-stage-3": "~6.17.0",
-    "eslint": "3.13.1",
-    "eslint-config-airbnb-base": "11.0.1",
-    "eslint-plugin-flowtype": "2.30.0",
-    "eslint-plugin-import": "~2.2.0",
-    "eslint-plugin-no-async-without-await": "~1.2.0",
-    "flow-bin": "0.38.0",
-    "graphql-relay": "0.4.4",
-    "jest": "18.1.0"
+    "jest": "18.1.0",
+    "rimraf": "2.5.4",
+    "typescript": "2.2.0-dev.20170118",
+    "typings": "2.1.0"
   },
   "jest": {
     "testEnvironment": "node",
