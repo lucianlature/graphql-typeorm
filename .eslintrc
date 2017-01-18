@@ -34,6 +34,8 @@
         "excludeArrowFunctions": true
       }
     ],
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
     "no-async-without-await/no-async-without-await": 2
   }
 }

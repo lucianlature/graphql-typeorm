@@ -17,7 +17,7 @@
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 7.2"
+    "node": ">= 6"
   },
   "repository": {
     "type": "git",
@@ -30,11 +30,11 @@
   },
   "homepage": "https://github.com/lucianlature/graphql-typeorm#readme",
   "dependencies": {
-    "graphql": "^0.8.2",
+    "graphql": "0.8.2",
     "pg": "^6.1.2",
-    "reflect-metadata": "^0.1.9",
+    "reflect-metadata": "0.1.9",
     "sqlite3": "^3.1.8",
-    "typeorm": "^0.0.6"
+    "typeorm": "0.0.6"
   },
   "peerDependencies": {
     "graphql": "0.8.2"
@@ -51,15 +51,14 @@
     "babel-plugin-transform-object-rest-spread": "6.20.2",
     "babel-plugin-transform-runtime": "~6.15.0",
     "babel-preset-stage-3": "~6.17.0",
-    "eslint": "~3.12.2",
-    "eslint-config-airbnb-base": "~11.0.0",
-    "eslint-plugin-flowtype": "~2.29.1",
+    "eslint": "3.13.1",
+    "eslint-config-airbnb-base": "11.0.1",
+    "eslint-plugin-flowtype": "2.30.0",
     "eslint-plugin-import": "~2.2.0",
     "eslint-plugin-no-async-without-await": "~1.2.0",
-    "flow-bin": "0.37.4",
+    "flow-bin": "0.38.0",
     "graphql-relay": "0.4.4",
-    "jest": "~18.0.0",
-    "lerna": "2.0.0-beta.32"
+    "jest": "18.1.0"
   },
   "jest": {
     "testEnvironment": "node",
