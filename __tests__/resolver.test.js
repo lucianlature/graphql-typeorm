@@ -13,7 +13,7 @@ import {
   GraphQLList,
 } from 'graphql';
 
-import { createConnection } from './support/helper';
+import createConnection from './support/helper';
 import resolver from '../src/resolver';
 
 // import test models
@@ -26,7 +26,7 @@ jest.useFakeTimers();
 let userA;
 let userB;
 let schema;
-let connection;
+let connection = null;
 
 /**
  * Setup the a) testing db schema and b) the according GraphQL types
@@ -162,10 +162,10 @@ beforeAll(async () => {
   });
 
   connection = await createConnection();
-  const userRepository = connection.getRepository(User);
+  const userRepository = connection && connection.getRepository(User);
   // save the user instances
   // await userRepository.persist(userA);
-  await userRepository.persist(userB);
+  await (userRepository && userRepository.persist(userB));
 
   schema = new GraphQLSchema({
     query: new GraphQLObjectType({

@@ -3,7 +3,7 @@
 import invariant from 'assert';
 import argsToFindOptions from './argsToFindOptions';
 
-export default function resolverFactory(repository, resolverOptions) {
+export default function resolverFactory(repository: any, resolverOptions: Object|any): Function {
   const metadata = repository.metadata;
   const targetAttributes = metadata.columns.map((columnMeta) => columnMeta.propertyName) || [];
   const options = resolverOptions || {};

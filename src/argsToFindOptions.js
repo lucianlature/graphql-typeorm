@@ -1,8 +1,8 @@
 /* @flow */
 
-import { replaceWhereOperators } from './replaceWhereOperators';
+import replaceWhereOperators from './replaceWhereOperators';
 
-export default function argsToFindOptions(args, targetAttributes) {
+export default function argsToFindOptions(args: Object, targetAttributes: any): Object {
   const result = {};
 
   if (args) {

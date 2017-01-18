@@ -1,14 +1,16 @@
+/** @flow */
+
 /**
  * Replace a key deeply in an object
  * @param obj
  * @param keyMap
  * @returns {Object}
  */
-function replaceKeyDeep(obj, keyMap) {
-  return Object.keys(obj).reduce((memo, key)=> {
-
+function replaceKeyDeep(obj, keyMap): Object {
+  return Object.keys(obj).reduce((aggr, key) => {
+    const memo = aggr;
     // determine which key we are going to use
-    let targetKey = keyMap[key] ? keyMap[key] : key;
+    const targetKey = keyMap[key] ? keyMap[key] : key;
 
     // assign the new value
     memo[targetKey] = obj[key];
@@ -35,7 +37,7 @@ function replaceKeyDeep(obj, keyMap) {
  * @param where arguments object in GraphQL Safe format meaning no leading "$" chars.
  * @returns {Object}
  */
-export function replaceWhereOperators(where) {
+export default function replaceWhereOperators(where: Object): String {
   return replaceKeyDeep(where, {
     and: '$and',
     or: '$or',
@@ -56,6 +58,6 @@ export function replaceWhereOperators(where) {
     contains: '$contains',
     contained: '$contained',
     any: '$any',
-    col: '$col'
+    col: '$col',
   });
 }
