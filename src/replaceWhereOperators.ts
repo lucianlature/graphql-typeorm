@@ -4,30 +4,33 @@
  * @param keyMap
  * @returns {Object}
  */
-function replaceKeyDeep(obj, keyMap): Object {
-  return Object.keys(obj).reduce((aggr, key) => {
-    const memo = aggr;
-    // determine which key we are going to use
-    const targetKey = keyMap[key] ? keyMap[key] : key;
+function replaceKeyDeep(obj: Object, keyMap: Object): Object {
+  return Object.keys(obj).reduce(
+    (aggr: Object, key: string) => {
+      const memo: Object = aggr;
+      // Determine which key we are going to use
+      const targetKey: string = keyMap[key] ? keyMap[key] : key;
 
-    // assign the new value
-    memo[targetKey] = obj[key];
+      // Assign the new value
+      memo[targetKey] = obj[key];
 
-    // recurse if an array
-    if (Array.isArray(memo[targetKey])) {
-      memo[targetKey].forEach((val, idx) => {
-        if (Object.prototype.toString.call(val) === '[object Object]') {
-          memo[targetKey][idx] = replaceKeyDeep(val, keyMap);
-        }
-      });
-    } else if (Object.prototype.toString.call(memo[targetKey]) === '[object Object]') {
-      // recurse if Object
-      memo[targetKey] = replaceKeyDeep(memo[targetKey], keyMap);
-    }
+      // Recurse if an array
+      if (Array.isArray(memo[targetKey])) {
+        memo[targetKey].forEach((val, idx) => {
+          if (Object.prototype.toString.call(val) === '[object Object]') {
+            memo[targetKey][idx] = replaceKeyDeep(val, keyMap);
+          }
+        });
+      } else if (Object.prototype.toString.call(memo[targetKey]) === '[object Object]') {
+        // Recurse if Object
+        memo[targetKey] = replaceKeyDeep(memo[targetKey], keyMap);
+      }
 
-    // return the modified object
-    return memo;
-  }, {});
+      // Return the modified object
+      return memo;
+    },
+    {},
+  );
 }
 
 /**
@@ -35,7 +38,7 @@ function replaceKeyDeep(obj, keyMap): Object {
  * @param where arguments object in GraphQL Safe format meaning no leading "$" chars.
  * @returns {Object}
  */
-export default function replaceWhereOperators(where: Object): String {
+export function replaceWhereOperators(where: Object): String {
   return replaceKeyDeep(where, {
     and: '$and',
     or: '$or',

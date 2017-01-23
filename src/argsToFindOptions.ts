@@ -1,66 +1,70 @@
-import * as R from "ramda-ts";
-import replaceWhereOperators from "./replaceWhereOperators";
+import * as R from 'ramda-ts';
+import replaceWhereOperators from './replaceWhereOperators';
 
 interface IValue {
-  prop: string
+  prop: string;
 }
 
-interface WhereFilterType {
+interface IWhereFilterType {
   [key: string]: IValue;
 }
 
-interface Filters {
-    where?: WhereFilterType,
-    limit?: number,
-    offset?: number,
-    order?: string[],
+interface IFilters {
+  where?: IWhereFilterType;
+  limit?: number;
+  offset?: number;
+  order?: string[];
 }
 
-const aggregate = (
+const aggregate: Function = (
   key: string,
-  index: number, 
+  index: number,
   arr: string[],
-  filters: Filters,
-  args: WhereFilterType,
-  targetAttributes: Object[]
+  filters: IFilters,
+  args: IWhereFilterType,
+  targetAttributes: Object[],
 ) => {
-  // if (targetAttributes.indexOf(key) !== -1) {
-  filters.where[key] = args[key];
-  /*
-  // }
-  const limit = (currentValue === "limit" && args[currentValue]) ? parseInt(args[currentValue], 10) : 1
-  */
-  /*
+  if (targetAttributes.indexOf(key) !== -1) {
+    filters.where[key] = args[key];
+  }
+
   if (key === 'offset' && args[key]) {
-    result.offset = parseInt(args[key], 10);
+    filters.offset = parseInt(args[key], 10);
   }
 
   if (key === 'order' && args[key]) {
     if (args[key].indexOf('reverse:') === 0) {
-      result.order = [[args[key].substring(8), 'DESC']];
+      filters.order = [[args[key].substring(8), 'DESC']];
     } else {
-      result.order = [[args[key], 'ASC']];
+      filters.order = [[args[key], 'ASC']];
     }
   }
 
   if (key === 'where' && args[key]) {
-    // setup where
-    result.where = replaceWhereOperators(args.where);
+    // Setup "where" filter
+    filters.where = replaceWhereOperators(args.where);
   }
-  */
-  return filters;
-}
 
-export default function argsToFindOptions(args: Object, targetAttributes: string[]): Object {
-  const defaultFilters: Filters = {
+  return filters;
+};
+
+export function argsToFindOptions(args: Object, targetAttributes: string[]): Object {
+  const defaultFilters: IFilters = {
     where: {},
     limit: 1,
     offset: 1,
     order: [],
   };
 
-  const setFilter = R.partialRight(aggregate, [ defaultFilters, args, targetAttributes ]);
-  const filters = Object.keys(args).forEach(setFilter);
+  const setFilter: (
+    key: string,
+    index: number,
+    arr: string[],
+    filters: IFilters,
+    args: Object,
+    attrs: string[],
+  ) => IFilters = R.partialRight(aggregate, [defaultFilters, args, targetAttributes]);
+  const filters: IFilters = Object.keys(args).forEach(setFilter);
 
   return Object.assign({}, defaultFilters, filters);
 }
