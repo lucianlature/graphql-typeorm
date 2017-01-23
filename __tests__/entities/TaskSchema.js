@@ -1,5 +1,3 @@
-/** @flow */
-
 import Task from '../models/Task';
 
 const TaskSchema = {
