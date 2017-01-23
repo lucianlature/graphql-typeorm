@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "declaration": false,
+    "noImplicitAny": false,
+    "rootDir": ".",
+    "outDir": "./dist/",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "removeComments": true,
+    "jsx": "react",
+    "allowJs": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "src/**/*",
+    "typings/browser.d.ts",
+    "typings/browser"
+  ]
+}
