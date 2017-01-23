@@ -1,11 +1,12 @@
 /** @flow */
-
-export default class User {
-  id: number;
-  name: string;
-
-  constructor({ id, name }: {id: number, name: string} = {}) {
-    this.id = id;
-    this.name = name;
-  }
-}
+"use strict";
+var User = (function () {
+    function User(_a) {
+        var _b = _a === void 0 ? {} : _a, id = _b.id, name = _b.name;
+        this.id = id;
+        this.name = name;
+    }
+    return User;
+}());
+exports.__esModule = true;
+exports["default"] = User;

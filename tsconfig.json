@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "outDir": "./dist/",
+    "outFile":"./dist/test.js",
+    "removeComments": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser"
+  ]
+}

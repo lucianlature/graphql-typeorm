@@ -1,12 +1,16 @@
 {
-  "extends": "airbnb-base",
-  "parser": "babel-eslint",
+  "extends": "cleanjs",
+  "parser": "eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
   "env": {
-    "jest": true,
-    "jasmine": true
+    "jest": false,
+    "jasmine": false
   },
   "plugins": [
-    "flow-remove-types",
+    "typescript",
     "no-async-without-await"
   ],
   "rules": {
@@ -19,23 +23,6 @@
       2,
       "always"
     ],
-    "flowtype/require-valid-file-annotation": [
-      2,
-      "always"
-    ],
-    "flowtype/space-after-type-colon": [
-      2,
-      "always"
-    ],
-    "flowtype/require-return-type": [
-      1,
-      "always",
-      {
-        "excludeArrowFunctions": true
-      }
-    ],
-    "flowtype/define-flow-type": 1,
-    "flowtype/use-flow-type": 1,
     "no-async-without-await/no-async-without-await": 2
   }
 }
