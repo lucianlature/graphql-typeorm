@@ -1,25 +1,44 @@
-import invariant from 'assert'
-import argsToFindOptions from './argsToFindOptions'
+import invariant from 'assert';
+import { Repository } from 'typeorm';
 
-export default function resolverFactory(repository: any, resolverOptions: Object|any): Function {
-  const metadata = repository.metadata;
-  const targetAttributes = metadata.columns.map((columnMeta) => columnMeta.propertyName) || [];
-  const options = resolverOptions || {};
+import { argsToFindOptions } from './argsToFindOptions';
+
+export interface IColumn {
+  propertyName: string;
+}
+export interface IMetadata {
+  columns: string[];
+}
+
+export interface IResolveOptions {
+  include: Object;
+  before: Object;
+  after: Object;
+  handleConnection: boolean;
+}
+
+export function resolverFactory(repository: Repository<Entity>, resolverOptions: Object): Function {
+  const metadata: IMetadata = repository.metadata;
+  const targetAttributes: string[] = metadata.columns.map((columnMeta) => columnMeta.propertyName) || [];
+  const options: IResolveOptions = resolverOptions || {};
 
   invariant(options.include === undefined, 'Include support has been removed in favor of dataloader batching');
-  if (typeof options.before === 'undefined') options.before = (optionsBefore) => optionsBefore;
-  if (typeof options.after === 'undefined') options.after = (result) => result;
-  if (typeof options.handleConnection === 'undefined') options.handleConnection = true;
+  if (options.before === undefined) {
+    options.before = (optionsBefore) => optionsBefore;
+  }
+  if (options.after === undefined) {
+    options.after = (result) => result;
+  }
+  if (options.handleConnection === undefined) {
+    options.handleConnection = true;
+  }
 
-  const resolver = (source, args, context, info) => {
-    const findOptions = argsToFindOptions(args, targetAttributes);
+  return (source, args, context, info) => {
+    const findOptions: Object = argsToFindOptions(args, targetAttributes);
 
     return repository
             .createQueryBuilder(info.fieldName)
             .where('user.id = id', findOptions.where)
             .getOne(findOptions);
   };
-
-  return resolver;
 }
-

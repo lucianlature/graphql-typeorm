@@ -2,7 +2,7 @@ import * as R from 'ramda-ts';
 import replaceWhereOperators from './replaceWhereOperators';
 
 interface IValue {
-  prop: string;
+  prop: string|number;
 }
 
 interface IWhereFilterType {
@@ -12,7 +12,7 @@ interface IWhereFilterType {
 interface IFilters {
   where?: IWhereFilterType;
   limit?: number;
-  offset?: number;
+  offset?: IWhereFilterType;
   order?: string[];
 }
 

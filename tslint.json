@@ -17,7 +17,7 @@
     "no-function-constructor-with-string-args": true,
     "no-http-string": [true, "http://www.example.com/?.*", "http://www.examples.com/?.*"],
     "no-octal-literal": true,
-    "no-reserved-keywords": true,
+    "no-reserved-keywords": [true, { "allow-quoted-properties": true }],
     "no-string-based-set-immediate": true,
     "no-string-based-set-interval": true,
     "no-string-based-set-timeout": true,
