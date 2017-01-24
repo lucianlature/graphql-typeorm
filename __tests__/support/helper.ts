@@ -1,45 +1,45 @@
-/** @flow */
-
 import * as typeorm from 'typeorm';
 
-import TaskSchema from '../entities/TaskSchema';
-import UserSchema from '../entities/UserSchema';
+import { taskSchema } from '../entities/TaskSchema';
+import { userSchema } from '../entities/UserSchema';
 
-import User from '../models/User';
+import { User } from '../models/User';
 
-if (typeof afterEach !== 'undefined') {
-  // afterEach(resetCache);
+if (afterEach !== undefined) {
+  // To implement: afterEach(resetCache);
 }
 
-type Env = {
-  POSTGRES_PORT_5432_TCP_ADDR: ?string,
-  POSTGRES_ENV_POSTGRES_USER: ?string,
-  POSTGRES_ENV_POSTGRES_PASSWORD: ?string,
-  POSTGRES_ENV_POSTGRES_DATABASE: ?string,
-  MYSQL_PORT_3306_TCP_ADDR: ?string,
-  MYSQL_ENV_MYSQL_USER: ?string,
-  MYSQL_ENV_MYSQL_PASSWORD: ?string,
-  MYSQL_ENV_MYSQL_DATABASE: ?string,
+export interface IEnvironment {
+  CI: boolean;
+  TYPE: string;
+  POSTGRES_PORT_5432_TCP_ADDR: string;
+  POSTGRES_ENV_POSTGRES_USER: string;
+  POSTGRES_ENV_POSTGRES_PASSWORD: string;
+  POSTGRES_ENV_POSTGRES_DATABASE: string;
+  MYSQL_PORT_3306_TCP_ADDR: string;
+  MYSQL_ENV_MYSQL_USER: string;
+  MYSQL_ENV_MYSQL_PASSWORD: string;
+  MYSQL_ENV_MYSQL_DATABASE: string;
 }
 
-type Driver = {
-  host: string,
-  username: string,
-  password: string,
-  database: string,
+export interface IDriver {
+  host: string;
+  username: string;
+  password: string;
+  database: string;
 }
 
-export default function createConnection(options: Object = {}): Promise<void> {
-  const env: env = process.env;
-  const type = env.TYPE || 'sqlite';
-  let driver: driver = {
+export function createConnection(options: Object = {}): Promise<void> {
+  const env: IEnvironment = process.env;
+  const dialect: string = env.TYPE || 'sqlite';
+  let driver: IDriver = {
     host: '',
     username: '',
     database: '',
     password: '',
   };
 
-  switch (type) {
+  switch (dialect) {
     case 'postgres':
       driver = {
         host: env.POSTGRES_PORT_5432_TCP_ADDR,
@@ -70,18 +70,21 @@ export default function createConnection(options: Object = {}): Promise<void> {
         });
       }
       break;
-    default: driver = {};
+    default:
   }
 
-  const config = Object.assign({
-    host: 'localhost',
-    username: 'graphql_typeorm_test',
-    password: 'graphql_typeorm_test',
-    database: 'graphql_typeorm_test',
-  }, driver);
+  const config: IDriver = Object.assign(
+    {
+      host: 'localhost',
+      username: 'graphql_typeorm_test',
+      password: 'graphql_typeorm_test',
+      database: 'graphql_typeorm_test',
+    },
+    driver,
+  );
 
-  const driverOptions = {
-    type,
+  const driverOptions: Object = {
+    type: dialect,
     port: 5432,
     host: config.host,
     username: config.username,
@@ -94,9 +97,9 @@ export default function createConnection(options: Object = {}): Promise<void> {
     driver: driverOptions,
     entities: [User],
     entitySchemas: [
-      // here we load all entity schemas we need
-      TaskSchema,
-      UserSchema,
+      // Here we load all entity schemas we need
+      taskSchema,
+      userSchema,
     ],
     logging: {
       logQueries: false,
