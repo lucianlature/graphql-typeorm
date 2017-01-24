@@ -1,6 +1,26 @@
 import { User } from '../models/User';
 
-export {
+export interface IColumnId {
+  primary: boolean;
+  'type': string;
+  generated: boolean;
+}
+
+export interface IColumnTypeString {
+  'type': string;
+}
+
+export interface IColumn {
+  id: IColumnId;
+  name: IColumnTypeString;
+}
+
+export interface IUserSchema {
+  target: Object;
+  columns: IColumn;
+}
+
+export const userSchema: IUserSchema = {
   target: User,
   columns: {
     id: {
@@ -10,14 +30,6 @@ export {
     },
     name: {
       type: 'string',
-    }, /* ,
-    relations: {
-        tasks: {
-            target: Task,
-            type: 'has-many',
-            joinTable: true,
-            cascadeInsert: true
-        }
-    }*/
+    },
   },
 };
