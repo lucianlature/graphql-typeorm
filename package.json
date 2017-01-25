@@ -2,7 +2,7 @@
   "name": "graphql-typeorm",
   "version": "0.1.0",
   "description": "GraphQL for MySQL & Postgres via TypeORM",
-  "main": "lib/index.js",
+  "main": "build/main.js",
   "scripts": {
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",

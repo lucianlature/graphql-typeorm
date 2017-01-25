@@ -1,28 +1,34 @@
-// import reflect-metadata shim
-import "reflect-metadata";
-import * as assert from "assert";
+import * as assert from 'assert';
 import {
   graphql,
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLString,
   GraphQLInt,
+  GraphQLList,
   GraphQLNonNull,
-  GraphQLList
-} from "graphql";
-import { suite, test, slow, timeout, skip, only } from "mocha-typescript";
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+} from 'graphql';
 
-import createConnection from './support/helper';
-import resolver from '../src/resolver';
+// Import reflect-metadata shim
+import 'reflect-metadata';
+import { Repository } from 'typeorm';
 
-// import test models
-import User from './models/User';
-import Task from './models/Task';
+// Import test models
+import { Task } from './models/Task';
+import { User } from './models/User';
+import { createConnection } from './support/helper';
 
-let userA;
-let userB;
-let schema;
-let connection = null;
+import { resolverFactory as resolver } from '../src/resolver';
+
+export interface IResult {
+  errors?: [];
+  data?: Object;
+}
+
+let userA: User;
+let userB: User;
+let schema: GraphQLSchema;
+let connection: Promise<void> = null;
 
 /**
  * Setup the a) testing db schema and b) the according GraphQL types
@@ -30,9 +36,7 @@ let connection = null;
  * The schema consists of a User that has Tasks.
  * A Task belongs to a Project, which can have Labels.
  */
-
-
-const taskType = new GraphQLObjectType({
+const taskType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Task',
   description: 'A task',
   fields: {
@@ -45,7 +49,7 @@ const taskType = new GraphQLObjectType({
   },
 });
 
-const userType = new GraphQLObjectType({
+const userType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
   description: 'A user',
   fields: {
@@ -105,10 +109,8 @@ const userType = new GraphQLObjectType({
   },
 });
 
-
-@suite class Resolver {
-  static async before() {
-    let taskId = 0;
+beforeAll(async () => {
+    let taskId: number = 0;
 
     userA = new User({
       id: 2,
@@ -155,9 +157,8 @@ const userType = new GraphQLObjectType({
     });
 
     connection = await createConnection();
-    const userRepository = connection && connection.getRepository(User);
-    // save the user instances
-    // await userRepository.persist(userA);
+    const userRepository: Repository<User> = connection && connection.getRepository(User);
+    // Save the user instances
     await (userRepository && userRepository.persist(userB));
 
     schema = new GraphQLSchema({
@@ -188,17 +189,17 @@ const userType = new GraphQLObjectType({
         },
       }),
     });
-  }
-}
+  },
+});
 
 /**
  * Now fill the testing DB with fixture values
  * We'll have projectA & projectB with two random labels each,
  * and two users each with some tasks that belong to those projects.
  */
-@test async "should resolve a plain result with a single model", async () => {
-  const user = userA;
-  const result = await graphql(schema, `
+it('should resolve a plain result with a single model', async () => {
+  const user: User = userA;
+  const result: IResult = await graphql(schema, `
     {
       user(id: ${user.id}) {
         name
@@ -206,7 +207,9 @@ const userType = new GraphQLObjectType({
     }
   `);
 
-  if (result.errors) throw new Error(result.errors[0].stack);
+  if (result.errors) {
+    throw new Error(result.errors[0].stack);
+  }
 
   expect(result.data).toEqual({
     user: {
@@ -216,17 +219,17 @@ const userType = new GraphQLObjectType({
 });
 
 it('should resolve a plain result with two single models', async () => {
-  // console.info(userA.id);
-  // console.info('userB.id = ', userB.id);
-  const result = await graphql(schema, `
+  const result: IResult = await graphql(schema, `
     {
       userB: user(id: ${userB.id}) {
         name
       }
     }
   `);
-  // console.info(result.data);
-  if (result.errors) throw new Error(result.errors[0].stack);
+
+  if (result.errors) {
+    throw new Error(result.errors[0].stack);
+  }
 
   expect(result.data).toEqual({
     userB: {
