@@ -10,7 +10,7 @@
     "lint": "tslint -t stylish '{src,__tests__}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "npm run test-only",
-    "test-only": "jest --coverage",
+    "test-only": "NODE_ENV=development POSTGRES_PORT_5432_TCP_ADDR=localhost POSTGRES_ENV_POSTGRES_USER=codelinks POSTGRES_ENV_POSTGRES_PASSWORD= POSTGRES_ENV_POSTGRES_DATABASE=test TYPE=postgres jest --coverage",
     "test:watch": "jest --watch"
   },
   "engineStrict": true,
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@types/jest": "16.0.4",
     "@types/node": "6.0.60",
+    "@types/ramda": "0.0.3",
     "assert": "1.4.1",
     "babel-eslint": "7.1.1",
     "eslint": "3.13.1",
@@ -51,7 +52,6 @@
     "eslint-plugin-typescript": "0.1.0",
     "jest": "18.1.0",
     "ramda": "0.23.0",
-    "ramda-ts": "0.1.2",
     "rimraf": "2.5.4",
     "tslint": "4.3.1",
     "tslint-microsoft-contrib": "4.0.0",

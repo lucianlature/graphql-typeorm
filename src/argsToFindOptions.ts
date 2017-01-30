@@ -1,4 +1,4 @@
-import * as R from 'ramda-ts';
+import * as R from 'ramda';
 import replaceWhereOperators from './replaceWhereOperators';
 
 interface IValue {
