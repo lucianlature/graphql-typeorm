@@ -102,7 +102,7 @@ export function createConnection(options: Object = {}): Promise<void> {
       userSchema,
     ],
     logging: {
-      logQueries: true,
+      logQueries: false,
       logFailedQueryError: true,
     },
     autoSchemaSync: true,

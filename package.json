@@ -10,7 +10,7 @@
     "lint": "tslint -t stylish '{src,__tests__}/**/*.{ts,tsx}'",
     "pretest": "npm run lint",
     "test": "npm run test-only",
-    "test-only": "NODE_ENV=development POSTGRES_PORT_5432_TCP_ADDR=localhost POSTGRES_ENV_POSTGRES_USER=codelinks POSTGRES_ENV_POSTGRES_PASSWORD= POSTGRES_ENV_POSTGRES_DATABASE=test TYPE=postgres jest --coverage",
+    "test-only": "NODE_ENV=development POSTGRES_PORT_5432_TCP_ADDR=localhost POSTGRES_ENV_POSTGRES_USER=codelinks POSTGRES_ENV_POSTGRES_PASSWORD= POSTGRES_ENV_POSTGRES_DATABASE=test TYPE=postgres jest --coverage --forceExit",
     "test:watch": "jest --watch"
   },
   "engineStrict": true,
