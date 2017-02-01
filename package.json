@@ -28,22 +28,22 @@
   },
   "homepage": "https://github.com/lucianlature/graphql-typeorm#readme",
   "dependencies": {
-    "graphql": "^0.8.2",
+    "graphql": "0.9.1",
     "pg": "6.1.2",
     "reflect-metadata": "0.1.9",
-    "source-map-support": "0.4.10",
-    "typeorm": "0.0.6"
+    "source-map-support": "0.4.11",
+    "typeorm": "0.0.8"
   },
   "peerDependencies": {
-    "graphql": "0.8.2"
+    "graphql": "0.9.1"
   },
   "devDependencies": {
-    "@types/jest": "16.0.4",
-    "@types/node": "6.0.60",
+    "@types/jest": "18.1.0",
+    "@types/node": "7.0.4",
     "@types/ramda": "0.0.3",
     "assert": "1.4.1",
     "babel-eslint": "7.1.1",
-    "eslint": "3.13.1",
+    "eslint": "3.14.1",
     "eslint-config-cleanjs": "4.0.0",
     "eslint-plugin-better": "0.1.5",
     "eslint-plugin-fp": "2.3.0",
@@ -53,7 +53,7 @@
     "jest": "18.1.0",
     "ramda": "0.23.0",
     "rimraf": "2.5.4",
-    "tslint": "4.3.1",
+    "tslint": "4.4.2",
     "tslint-microsoft-contrib": "4.0.0",
     "typescript": "2.1.5",
     "typescript-eslint-parser": "1.0.2",

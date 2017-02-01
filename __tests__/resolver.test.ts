@@ -111,6 +111,7 @@ const userType: GraphQLObjectType = new GraphQLObjectType({
 jest.useFakeTimers();
 
 beforeAll(async () => {
+
     let taskId: number = 0;
 
     userA = new User({
@@ -158,9 +159,9 @@ beforeAll(async () => {
     });
 
     connection = await createConnection();
-    const userRepository: Repository<User> = connection && connection.getRepository(User);
+    const userRepository: Repository<User> = connection.getRepository(User);
     // Save the user instances
-    await (userRepository && userRepository.persist(userA));
+    await userRepository.persist([userA, userB]);
 
     schema = new GraphQLSchema({
       query: new GraphQLObjectType({
@@ -190,7 +191,6 @@ beforeAll(async () => {
         },
       }),
     });
-  },
 });
 
 /**
@@ -219,10 +219,11 @@ it('should resolve a plain result with a single model', async () => {
   });
 });
 
-xit('should resolve a plain result with two single models', async () => {
+it('should resolve a plain result with two single models', async () => {
+  const user: User = userA;
   const result: IResult = await graphql(schema, `
     {
-      userB: user(id: ${userB.id}) {
+      user(id: ${user.id}) {
         name
       }
     }
@@ -233,8 +234,8 @@ xit('should resolve a plain result with two single models', async () => {
   }
 
   expect(result.data).toEqual({
-    userB: {
-      name: userB.name,
+    user: {
+      name: userA.name,
     },
   });
 });
