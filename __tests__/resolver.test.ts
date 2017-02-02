@@ -220,10 +220,12 @@ it('should resolve a plain result with a single model', async () => {
 });
 
 it('should resolve a plain result with two single models', async () => {
-  const user: User = userA;
   const result: IResult = await graphql(schema, `
     {
-      user(id: ${user.id}) {
+      userA: user(id: ${userA.id}) {
+        name
+      },
+      userB: user(id: ${userB.id}) {
         name
       }
     }
@@ -234,8 +236,11 @@ it('should resolve a plain result with two single models', async () => {
   }
 
   expect(result.data).toEqual({
-    user: {
+    userA: {
       name: userA.name,
+    },
+    userB: {
+      name: userB.name,
     },
   });
 });

@@ -37,9 +37,9 @@ export function resolverFactory(repository: Repository<Entity>, resolverOptions:
   return (source, args, context, info) => {
     const findOptions: Object = argsToFindOptions(args, targetAttributes);
 
-    return repository
-            .createQueryBuilder(info.fieldName)
-            .where('user.id = id', findOptions.where)
-            .getOne(findOptions);
+    return repository.findOneById(findOptions.where.id);
+            // CreateQueryBuilder(info.fieldName)
+            // Where('user.id = id', findOptions.where)
+            // GetOne(findOptions);
   };
 }
