@@ -245,9 +245,8 @@ it('should resolve a plain result with two single models', async () => {
   });
 });
 
-/*
-xit('should resolve a array result with a model and aliased includes', function () {
-  return graphql(schema, `
+it('should resolve a array result with a model and aliased includes', async () => {
+  const result: IResult = await graphql(schema, `
     {
       users {
         name
@@ -259,16 +258,17 @@ xit('should resolve a array result with a model and aliased includes', function 
         }
       }
     }
-  `).then(function (result) {
-    if (result.errors) throw new Error(result.errors[0].stack);
+  `);
 
-    result.data.users.forEach(function (user) {
-      expect(user.first).to.be.ok;
-      expect(user.rest).to.be.ok;
-    });
+  if (result.errors) {
+    throw new Error(result.errors[0].stack);
+  }
+
+  expect(result.data).toEqual({
+    users: [],
   });
 });
-
+/*
 xit('should resolve a array result with a model and aliased includes and __typename', function () {
   return graphql(schema, `
     {

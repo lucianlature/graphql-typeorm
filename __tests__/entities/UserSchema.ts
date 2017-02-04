@@ -1,3 +1,4 @@
+import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { User } from '../models/User';
 
 export interface IColumnId {
@@ -20,6 +21,7 @@ export interface IUserSchema {
   columns: IColumn;
 }
 
+@Entity('User')
 export const userSchema: IUserSchema = {
   target: User,
   columns: {

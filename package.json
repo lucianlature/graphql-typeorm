@@ -38,12 +38,12 @@
     "graphql": "0.9.1"
   },
   "devDependencies": {
-    "@types/jest": "18.1.0",
-    "@types/node": "7.0.4",
+    "@types/jest": "18.1.1",
+    "@types/node": "7.0.5",
     "@types/ramda": "0.0.3",
     "assert": "1.4.1",
     "babel-eslint": "7.1.1",
-    "eslint": "3.14.1",
+    "eslint": "3.15.0",
     "eslint-config-cleanjs": "4.0.0",
     "eslint-plugin-better": "0.1.5",
     "eslint-plugin-fp": "2.3.0",
