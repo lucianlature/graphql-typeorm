@@ -1,9 +1,7 @@
 import * as typeorm from 'typeorm';
 
-import { taskSchema } from '../entities/TaskSchema';
-import { userSchema } from '../entities/UserSchema';
-
-import { User } from '../models/User';
+import { Task } from '../entities/Task';
+import { User } from '../entities/User';
 
 if (afterEach !== undefined) {
   // To implement: afterEach(resetCache);
@@ -95,11 +93,9 @@ export function createConnection(options: Object = {}): Promise<void> {
 
   return typeorm.createConnection({
     driver: driverOptions,
-    entities: [User],
-    entitySchemas: [
-      // Here we load all entity schemas we need
-      taskSchema,
-      userSchema,
+    entities: [
+      Task,
+      User,
     ],
     logging: {
       logQueries: false,
